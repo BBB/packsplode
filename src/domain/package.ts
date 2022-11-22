@@ -6,15 +6,21 @@ export type Package = {
   dependencies?: Dependencies;
 };
 export const version = recordSetter<Package, string>("version");
-const entries =
+
+const fold =
   <Subject>(...args: Array<(subject: Subject) => Subject>) =>
   (subject: Subject) => {
     return args.reduce((agg, set) => set(agg), subject);
   };
-export const dependencies =
-  <Package, Subject>(...args: Array<(subject: Subject) => Subject>) =>
-  (pack: Package) =>
-    recordSetter<Package, Subject>("dependencies")(
-      entries(...args)({} as Subject)
-    )(pack);
-export const definition = entries;
+
+function foldAndSet(name: string) {
+  return <Package, Subject>(...args: Array<(subject: Subject) => Subject>) =>
+    (pack: Package) =>
+      recordSetter<Package, Subject>(name)(fold(...args)({} as Subject))(pack);
+}
+
+export const dependencies = foldAndSet("dependencies");
+export const devDependencies = foldAndSet("devDependencies");
+export const peerDependencies = foldAndSet("peerDependencies");
+
+export const definition = fold;
