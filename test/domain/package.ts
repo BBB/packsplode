@@ -14,16 +14,8 @@ const peer = library("peer");
 const version = versionLens.set.bind(versionLens);
 const name = nameLens.set.bind(nameLens);
 
-const mypackage = definition(
-  name("@scope/mypackage"),
-  version("1.2.3"),
-  react("1.0.0").prod(),
-  reactDom("2.0.0").prod(),
-  typescript("3.0.0").dev(),
-  peer("3.0.0").peer()
-);
 it("prod deps should add", () => {
-  expect(react("1").prod()({})).toMatchInlineSnapshot(`
+  expect(definition(react("1").prod())).toMatchInlineSnapshot(`
     {
       "dependencies": {
         "react": "1",
@@ -33,7 +25,7 @@ it("prod deps should add", () => {
 });
 
 it("dev deps should add", () => {
-  expect(react("1").dev()({})).toMatchInlineSnapshot(`
+  expect(definition(react("1").dev())).toMatchInlineSnapshot(`
     {
       "devDependencies": {
         "react": "1",
@@ -43,7 +35,7 @@ it("dev deps should add", () => {
 });
 
 it("peer deps should add to dev deps too", () => {
-  expect(peer("1").peer()({})).toMatchInlineSnapshot(`
+  expect(definition(peer("1").peer())).toMatchInlineSnapshot(`
     {
       "devDependencies": {
         "peer": "1",
@@ -56,7 +48,16 @@ it("peer deps should add to dev deps too", () => {
 });
 
 it("should render the package json", () => {
-  expect(mypackage).toMatchInlineSnapshot(`
+  expect(
+    definition(
+      name("@scope/mypackage"),
+      version("1.2.3"),
+      react("1.0.0").prod(),
+      reactDom("2.0.0").prod(),
+      typescript("3.0.0").dev(),
+      peer("3.0.0").peer()
+    )
+  ).toMatchInlineSnapshot(`
     {
       "dependencies": {
         "react": "1.0.0",
