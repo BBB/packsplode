@@ -1,29 +1,4 @@
-import {
-  Dependencies,
-  Package,
-  definition,
-  dependencyLens,
-  devDependencyLens,
-  nameLens,
-  peerDependencyLens,
-  versionLens,
-} from "./domain/package";
-import { Bidi } from "./lenses/bidi";
-
-const library = (name: string) => (version: string) => {
-  const lens = new Bidi<Dependencies, string>(
-    (def) => def[name],
-    (version) => (def) => ({ ...def, [name]: version })
-  );
-  return {
-    prod: () => dependencyLens.compose(lens).set(version),
-    dev: () => devDependencyLens.compose(lens).set(version),
-    peer: () => (into: Package) =>
-      peerDependencyLens.compose(lens).set(version)(
-        devDependencyLens.compose(lens).set(version)(into)
-      ),
-  };
-};
+import { definition, library, nameLens, versionLens } from "./domain/package";
 
 const react = library("react");
 const reactDom = library("react-dom");
