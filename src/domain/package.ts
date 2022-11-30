@@ -36,7 +36,8 @@ const fold =
     return args.reduce((agg, set) => set(agg), subject);
   };
 
-export const definition = fold;
+export const definition = (...args: Array<(subject: Package) => Package>) =>
+  fold(...args)({});
 
 export const library = (name: string) => (version: string) => {
   const lens = new Bidi<Dependencies, string>(
