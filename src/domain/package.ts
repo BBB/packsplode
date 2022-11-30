@@ -1,5 +1,6 @@
+import { optional } from "@ollierelph/result4t";
+
 import { Bidi } from "../lenses/bidi";
-import { optional } from "../lib/option";
 
 export type Dependencies = Record<string, string>;
 export type Package = {

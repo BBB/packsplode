@@ -1,10 +1,14 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@ollierelph/result4t': ^0.0.3
   '@trivago/prettier-plugin-sort-imports': ^3.4.0
   prettier: ^2.7.1
   typescript: ^4.9.3
   vitest: ^0.15.2
+
+dependencies:
+  '@ollierelph/result4t': 0.0.3
 
 devDependencies:
   '@trivago/prettier-plugin-sort-imports': 3.4.0_prettier@2.7.1
@@ -304,6 +308,10 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
+
+  /@ollierelph/result4t/0.0.3:
+    resolution: {integrity: sha512-Pia1mGrKLiOjkhw7VdVKYf9dAsElFdHfVZyZomDvH7DuSwnTy1lSDhsDTiPEjTrVQY4y87Y0X/vQm3Q2V7Fnrg==}
+    dev: false
 
   /@trivago/prettier-plugin-sort-imports/3.4.0_prettier@2.7.1:
     resolution: {integrity: sha512-485Iailw8X5f7KetzRka20RF1kPBEINR5LJMNwlBZWY1gRAlVnv5dZzyNPnLxSP0Qcia8HETa9Cdd8LlX9o+pg==}
