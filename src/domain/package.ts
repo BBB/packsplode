@@ -1,11 +1,34 @@
-import { recordSetter } from "../lenses/set";
+import {Bidi} from "../lenses/bidi";
+import {optional} from "../lib/option";
 
 export type Dependencies = Record<string, string>;
 export type Package = {
-  name?: string;
+  name?: string | undefined;
+  version?: string;
   dependencies?: Dependencies;
+  devDependencies?: Dependencies;
+  peerDependencies?: Dependencies;
 };
-export const version = recordSetter<Package, string>("version");
+export const versionLens = new Bidi<Package, string | undefined>(
+    (def) => def.version,
+    (version) => (def) => ({ ...def, version })
+);
+export const nameLens = new Bidi<Package, string | undefined>(
+    (def) => def.name,
+    (name) => (def) => ({ ...def, name })
+);
+export const dependencyLens = new Bidi<Package, Dependencies>(
+    (def) => optional(def.dependencies).orElse({}),
+    (dependencies) => (def) => ({ ...def, dependencies })
+);
+export const devDependencyLens = new Bidi<Package, Dependencies>(
+    (def) => optional(def.devDependencies).orElse({}),
+    (devDependencies) => (def) => ({ ...def, devDependencies })
+);
+export const peerDependencyLens = new Bidi<Package, Dependencies>(
+    (def) => optional(def.peerDependencies).orElse({}),
+    (peerDependencies) => (def) => ({ ...def, peerDependencies })
+);
 
 const fold =
   <Subject>(...args: Array<(subject: Subject) => Subject>) =>
@@ -13,14 +36,5 @@ const fold =
     return args.reduce((agg, set) => set(agg), subject);
   };
 
-function foldAndSet(name: string) {
-  return <Package, Subject>(...args: Array<(subject: Subject) => Subject>) =>
-    (pack: Package) =>
-      recordSetter<Package, Subject>(name)(fold(...args)({} as Subject))(pack);
-}
-
-export const dependencies = foldAndSet("dependencies");
-export const devDependencies = foldAndSet("devDependencies");
-export const peerDependencies = foldAndSet("peerDependencies");
 
 export const definition = fold;
