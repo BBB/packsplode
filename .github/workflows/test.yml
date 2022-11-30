@@ -26,8 +26,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - uses: pnpm/action-setup@v2.2.2
-      working-directory: ./packsplode
       with:
+        working-directory: ./packsplode
         version: 7
         run_install: |
           - recursive: true
