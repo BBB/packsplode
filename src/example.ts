@@ -1,5 +1,6 @@
 import {
   Dependencies,
+  Package,
   definition,
   dependencyLens,
   devDependencyLens,
@@ -17,7 +18,10 @@ const library = (name: string) => (version: string) => {
   return {
     prod: () => dependencyLens.compose(lens).set(version),
     dev: () => devDependencyLens.compose(lens).set(version),
-    peer: () => peerDependencyLens.compose(lens).set(version),
+    peer: () => (into: Package) =>
+      peerDependencyLens.compose(lens).set(version)(
+        devDependencyLens.compose(lens).set(version)(into)
+      ),
   };
 };
 
