@@ -1,0 +1,1 @@
+What if you weren't restricted by JSON when defining your packages?
