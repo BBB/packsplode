@@ -2,37 +2,42 @@ import { expect, it } from "vitest";
 
 import { Bidi } from "../../src/lenses/bidi";
 
+class Widget {
+  constructor(private value: number) {}
+
+  get id() {
+    return this.value;
+  }
+}
+
+class Gadget {
+  constructor(public widget: Widget) {}
+}
+
+const widgetId = new Bidi<Widget, number>(
+  (source) => source.id,
+  (woo) => (source) => new Widget(woo)
+);
+const widget = new Bidi<Gadget, Widget>(
+  (source) => source.widget,
+  (widget) => (source) => new Gadget(widget)
+);
+
 it("should get and set a value", () => {
-  const woo = new Bidi<{ woo: string }, string>(
-    (source) => source.woo,
-    (woo) => (source) => ({
-      ...source,
-      woo,
-    })
-  );
-  expect(woo.get({ woo: "hoo" })).toEqual("hoo");
-  expect(woo.set("boo")({ woo: "hoo" })).toEqual({ woo: "boo" });
+  expect(widgetId.get(new Widget(1))).toEqual(1);
+  expect(widgetId.set(1)(new Widget(2))).toEqual(new Widget(1));
 });
 
 it("should compose to get and set a nested value", () => {
-  const items = new Bidi<{ items: string[] }, string[]>(
-    (source) => source.items,
-    (items) => (source) => ({
-      ...source,
-      items,
-    })
+  const gadgetWidgetId = widget.compose(widgetId);
+  expect(gadgetWidgetId.get(new Gadget(new Widget(2)))).toEqual(2);
+  expect(gadgetWidgetId.set(11)(new Gadget(new Widget(2)))).toEqual(
+    new Gadget(new Widget(11))
   );
-  const first = new Bidi<string[], string>(
-    (items) => items[0],
-    (item) => (items) => {
-      const next = items.slice();
-      next[0] = item;
-      return next;
-    }
-  );
-  const firstItem = items.compose(first);
-  expect(firstItem.get({ items: ["one", "two"] })).toEqual("one");
-  expect(firstItem.set("boo")({ items: ["one", "two"] })).toEqual({
-    items: ["boo", "two"],
-  });
+});
+
+it("should modify a value", () => {
+  const orig = new Widget(1);
+  expect(widgetId.modify((v) => v + 20)(orig)).toEqual(new Widget(21));
+  expect(orig).toStrictEqual(orig);
 });

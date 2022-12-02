@@ -23,4 +23,8 @@ export class Bidi<Subject, Value> implements BidiLens<Subject, Value> {
       }
     );
   }
+
+  modify(predicate: (inner: Value) => Value) {
+    return (outer: Subject) => this.set(predicate(this.get(outer)))(outer);
+  }
 }
