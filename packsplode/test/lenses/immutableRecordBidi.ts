@@ -7,6 +7,7 @@ type Root = { woo: Woo };
 const woo = fromRecord<Root>()("woo");
 const hoo = fromRecord<Woo>()("hoo");
 const wooHoo = woo.compose(hoo);
+
 it("should get and set a value", () => {
   const orig = { woo: { hoo: true } };
   expect(wooHoo.get(orig)).toEqual(true);
