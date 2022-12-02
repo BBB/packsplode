@@ -31,7 +31,7 @@ export const peerDependencyLens = new Bidi<Package, Dependencies>(
   (peerDependencies) => (def) => ({ ...def, peerDependencies })
 );
 
-const fold =
+export const fold =
   <Subject>(...args: Array<(subject: Subject) => Subject>) =>
   (subject: Subject) => {
     return args.reduce((agg, set) => set(agg), subject);
@@ -40,7 +40,7 @@ const fold =
 export const definition = (...args: Array<(subject: Package) => Package>) =>
   fold(...args)({});
 
-export const library = (name: string) => (version: string) => {
+export const library = (name: string, version: string) => {
   const lens = new Bidi<Dependencies, string>(
     (def) => def[name],
     (version) => (def) => ({ ...def, [name]: version })
